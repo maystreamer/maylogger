@@ -1,0 +1,26 @@
+{
+  "name": "maylogger",
+  "version": "1.0.0",
+  "description": "A highly configurable Node.js logging library",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "inversify": "^6.1.4",
+    "pino": "^9.5.0",
+    "reflect-metadata": "^0.2.2",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/winston": "^2.4.2",
+    "typescript": "^5.7.2"
+  },
+  "keywords": [],
+  "author": "MayStreamer",
+  "license": "ISC"
+}
