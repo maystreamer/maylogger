@@ -1,7 +1,8 @@
 import pino from 'pino';
 import { ILogger } from './ilogger';
 import { getFormattedDate, getCallerInfo } from './utils';
-import { LoggerConfig, defaultConfig } from './config';
+import { LoggerConfig, defaultConfig } from './logconfig';
+import { Message } from './message';
 
 export class PinoLogger implements ILogger {
     private logger: pino.Logger;
@@ -24,25 +25,23 @@ export class PinoLogger implements ILogger {
         });
     }
 
-    info(message: string, ...meta: any[]): void {
-        this.logger.info(message, ...meta);
+    public error(message: Message): void {
+        this.logger.error(message.getFormattedMessage());
     }
 
-    debug(message: string, ...meta: any[]): void {
-        if (this.config.isDebugEnabled) {
-            this.logger.debug(message, ...meta);
-        }
+    public warn(message: Message): void {
+        this.logger.warn(message.getFormattedMessage());
     }
 
-    warn(message: string, ...meta: any[]): void {
-        this.logger.warn(message, ...meta);
+    public info(message: Message): void {
+        this.logger.info(message.getFormattedMessage());
     }
 
-    error(message: string, ...meta: any[]): void {
-        this.logger.error(message, ...meta);
+    public debug(message: Message): void {
+        this.logger.debug(message.getFormattedMessage());
     }
 
-    fatal(message: string, ...meta: any[]): void {
-        this.logger.fatal(message, ...meta);
+    public trace(message: Message): void {
+        this.logger.trace(message.getFormattedMessage());
     }
 }

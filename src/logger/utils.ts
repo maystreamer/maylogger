@@ -2,7 +2,12 @@ import * as path from 'path';
 
 export const getFormattedDate = (): string => {
     // yyyy-mm-dd hh:mm:ss.ms
-   return new Date().toISOString().replace('T', ' ').slice(0, 23);
+    return new Date().toISOString().replace('T', ' ').slice(0, 23);
+};
+
+export const getDateTimeDiff = (start: number): string => {
+    const dateTimeDiff = Date.now() - start;
+    return `${dateTimeDiff} ms`;
 };
 
 export const getCallerInfo = (): string => {
@@ -18,3 +23,5 @@ export const getCallerInfo = (): string => {
     }
     return '';
 };
+
+export const getSubString = (input: string, noOfChars: number): string => input.slice(0, noOfChars);

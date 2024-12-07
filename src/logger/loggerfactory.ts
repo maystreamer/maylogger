@@ -1,13 +1,18 @@
 import { ILogger } from './ilogger';
 import { WinstonLogger } from './winstonlogger';
 import { PinoLogger } from './pinologger';
-import { LoggerConfig } from './config';
+import { LoggerConfig } from './logconfig';
 
 export class LoggerFactory {
   static getLogger(type: string, config: LoggerConfig): ILogger {
     const appName = (config.appName || '').trim().toLowerCase();
     if (!appName) {
       throw new Error("App name is required in LoggerConfig");
+    }
+
+    const dir = (config.dir || '').trim().toLowerCase();
+    if (!dir) {
+      throw new Error("Log directory is required in LoggerConfig");
     }
 
     type = (type || '').trim().toLowerCase();

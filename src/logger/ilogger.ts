@@ -1,7 +1,9 @@
+import { Message } from './message';
+
 export interface ILogger {
-  info(message: string, ...meta: any[]): void;
-  debug(message: string, ...meta: any[]): void;
-  warn(message: string, ...meta: any[]): void;
-  error(message: string, ...meta: any[]): void;
-  fatal(message: string, ...meta: any[]): void;
+  error(message : Message)  : void;
+  warn (message : Message)  : void;
+  info (message : Message)  : void;
+  debug(message : Message)  : void;
+  trace(message : Message)  : void;
 }
