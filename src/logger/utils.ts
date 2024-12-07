@@ -1,5 +1,10 @@
 import * as path from 'path';
 
+/**
+ * Utility Functions for Logging and Date-Time Management
+ * 
+ * This module provides a set of utility functions used for logging
+ */
 export const getFormattedDate = (): string => {
     // yyyy-mm-dd hh:mm:ss.ms
     return new Date().toISOString().replace('T', ' ').slice(0, 23);

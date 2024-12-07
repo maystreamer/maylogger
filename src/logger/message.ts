@@ -1,3 +1,16 @@
+/**
+ * Message Class
+ * 
+ * The `Message` class is responsible for encapsulating log message content, trace information, and associated parameters.
+ * It provides methods for formatting log messages with dynamic parameters, handling optional error causes, and managing trace IDs.
+ * 
+ * - The class allows the creation of message instances using static methods: `msg` for basic messages and `msgWithCause` for messages that include an associated error (`cause`).
+ * - The constructor initializes the message content, trace ID, and optional parameters. It also checks the environment variable `IS_DEBUG_ENABLED` to determine if debug-specific formatting should be applied (e.g., converting objects to JSON strings).
+ * - The `getFormattedMessage` method formats the message by replacing placeholders with the corresponding parameters, and includes error stack traces if a `cause` is provided and debug is enabled.
+ * - The class provides getter and setter methods to access and modify the message, trace ID, parameters, and cause (error).
+ * 
+ * This class helps manage the structure and formatting of log messages, enabling flexible and detailed logging that includes contextual information such as trace IDs, parameters, and optional error details.
+ */
 export class Message {
     private message:        string;
     private traceId:        string;
