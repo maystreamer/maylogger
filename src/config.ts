@@ -23,4 +23,6 @@ export const configuration = {
     nodeEnv:        process.env.NODE_ENV as 'development' | 'production' | 'test',
     appName:        process.env.APP_NAME as string | "no-app",
     isDebugEnabled: process.env.IS_DEBUG_ENABLED?.toLowerCase() === 'true' || false,
+    isTicsEnabled:  process.env.IS_TICS_ENABLED?.toLowerCase()  === 'true' || false,
+    isErrorEnabled: process.env.IS_ERROR_ENABLED?.toLowerCase() === 'true' || false,
 };

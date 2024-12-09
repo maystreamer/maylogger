@@ -74,4 +74,14 @@ export class Logger {
         const msg = Message.msg(message, traceId, ...params);
         this.logger.trace(msg);
     }
+
+    public tics(message: string, traceId: string, ...params: any[]): void {
+        const msg = Message.msg(message, traceId, ...params);
+        this.logger.tics(msg);
+    }
+
+    public ticsWithTime(message: string, traceId: string, start: number, ...params: any[]): void {
+        const msg = Message.msg(message, traceId, ...params, getDateTimeDiff(start));
+        this.logger.tics(msg);
+    }
 }

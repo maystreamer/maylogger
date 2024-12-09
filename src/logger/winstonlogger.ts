@@ -1,10 +1,10 @@
 import winston, { transports, format } from 'winston';
 import 'winston-daily-rotate-file';
-import { ILogger } from './ilogger';
-import { getFormattedDate, getSubString} from './utils';
-import { LogLevel, LoggerConfig, defaultConfig } from './logconfig';
-import * as path from 'path';
-import { Message } from './message';
+import { getFormattedDate} from './utils';
+import { CustomLevels, LogLevel, LoggerConfig, defaultConfig } from './logconfig';
+import { AbstractLogger } from './abstractlogger';
+import DailyRotateFile from 'winston-daily-rotate-file';
+
 
 /**
  * WinstonLogger Class
@@ -30,51 +30,54 @@ import { Message } from './message';
  * This class provides a robust logging solution that integrates well with the `winston` library, offering flexibility in log 
  * formatting, file rotation, and log level control, while ensuring rich contextual information is included in the logs.
  */
-export class WinstonLogger implements ILogger {
-    private logger: winston.Logger;
-    private config: LoggerConfig;
-    private static defaultTraceId = 'd25ed3cc-3d61-412b-82aa-dummytraceid';
+export class WinstonLogger extends AbstractLogger {
  
     constructor(config: LoggerConfig = defaultConfig) {
-        this.config     =   { ...defaultConfig, ...config };
-        const logDir    =   (this.config.dir ? this.config.dir.toLowerCase() : __dirname) as string;
-        const level     =   this.config.level.trim().toLowerCase();
-        const appName   =   this.config.appName.trim().toLowerCase();
+        super(config);
+
+        let ticsFileRotateTransport: DailyRotateFile | undefined;
+        let errorFileRotateTransport: DailyRotateFile | undefined;
+        if(config.isTicsEnabled){
+            ticsFileRotateTransport = new transports.DailyRotateFile({
+                filename:       this.getLogFilePath(LogLevel.TICS),
+                level:          LogLevel.TICS,
+                datePattern:    config.datePattern,
+                zippedArchive:  true,
+                maxSize:        this.config.maxSize,
+                maxFiles:       this.config.maxFiles,
+                format:         this.getFormatForFile(this.appName)
+            });
+        }
+
+        if(config.isErrorEnabled){
+            errorFileRotateTransport = new transports.DailyRotateFile({
+                filename:       this.getLogFilePath(LogLevel.ERROR),
+                level:          LogLevel.ERROR,
+                datePattern:    config.datePattern,
+                zippedArchive:  true,
+                maxSize:        this.config.maxSize,
+                maxFiles:       this.config.maxFiles,
+                format:         this.getFormatForFile(this.appName)
+            });            
+        }
 
         const infoFileRotateTransport = new transports.DailyRotateFile({
-            filename:       path.join(logDir, `%DATE%-${LogLevel.INFO}-${appName}.log`),
+            filename:       this.getLogFilePath(LogLevel.INFO),
             level:          LogLevel.INFO,
-            datePattern:    'YYYY-MM-DD',
+            datePattern:    config.datePattern,
             zippedArchive:  true,
-            maxSize:        '50m',
-            maxFiles:       '15d',
-            format:         this.getFormatForFile(appName)
-        });
-
-        const errorFileRotateTransport = new transports.DailyRotateFile({
-            filename:       path.join(logDir, `%DATE%-${LogLevel.ERROR}-${appName}.log`),
-            level:          LogLevel.ERROR,
-            datePattern:    'YYYY-MM-DD',
-            zippedArchive:  true,
-            maxSize:        '50m',
-            maxFiles:       '15d',
-            format:         this.getFormatForFile(appName)
+            maxSize:        this.config.maxSize,
+            maxFiles:       this.config.maxFiles,
+            format:         this.getFormatForFile(this.appName)
         });
         
         const consoleTransport = new transports.Console({
-            format: this.getFormatForConsole(appName)
+            format: this.getFormatForConsole(this.appName)
         });
         
-        // // Define the custom log format
-        // const customLogFormat = winston.format.printf(({ timestamp, level, message, label, stack }) => {
-        //     // Padding for log level and message
-        //     const paddedLevel = level.padEnd(7); // Pad level to 7 characters
-        //     const paddedMessage = (message as string).padEnd(50); // Pad message to 50 characters
-        //     return `${timestamp} ${paddedLevel} [${label}] ${paddedMessage.trim()} ${stack || ''}`;
-        // });
-        
         this.logger = winston.createLogger({
-            level:              level || LogLevel.INFO,
+            levels:             CustomLevels.levels,
+            level:              this.level || LogLevel.INFO,
             handleExceptions:   true,
             format:             winston.format.combine(
                                     winston.format.timestamp({ format: getFormattedDate() }),
@@ -82,16 +85,18 @@ export class WinstonLogger implements ILogger {
                                 ),
             transports:         [
                                     infoFileRotateTransport,
-                                    errorFileRotateTransport,
+                                    ...(errorFileRotateTransport ? [errorFileRotateTransport] : []), // Only add errorFileRotateTransport if it's defined
+                                    ...(ticsFileRotateTransport ? [ticsFileRotateTransport] : []),   // Only add ticsFileRotateTransport if it's defined
                                     consoleTransport,
                                 ],
         });
+        winston.addColors(CustomLevels.colors);
     }
 
     getFormatForConsole(appName: string): winston.Logform.Format {
         return format.combine(
           format.printf(info => {
-                return this.buildLog(info, appName);
+                return this.prepareLog(info, appName);
             }),
           format.colorize({all: true})
         );
@@ -102,37 +107,17 @@ export class WinstonLogger implements ILogger {
         return format.combine(
             winston.format.label({ label: containerName }),
             format.printf(info => {
-                return this.buildLog(info, appName);
+                return this.prepareLog(info, appName);
             }));
     }
 
-    buildLog(info: winston.Logform.TransformableInfo, appName: string) {
+    prepareLog(info: winston.Logform.TransformableInfo, appName: string) {
         let message:    string  = info?.message as string;
         const args:     any[]   = Array.isArray(info[Symbol.for('splat')]) ? info[Symbol.for('splat')] as any[] : [];
         const traceId:  string  = args[0] || WinstonLogger.defaultTraceId;
         let level:      string  = info.level.trim().toUpperCase();
         level = level === 'ERROR' ? '[ERROR]' : `[${level}] `;
         //let formattedMessage = this.formatMessage(message, level, args);
-        return `[${info.timestamp}] [${appName}] [${traceId}] ${level}  ${message}`;
-    }
-
-    public error(message: Message): void {
-        this.logger.error(message.getFormattedMessage(), message.getTraceId());
-    }
-
-    public warn(message: Message): void {
-        this.logger.warn(message.getFormattedMessage(), message.getTraceId());
-    }
-
-    public info(message: Message): void {
-        this.logger.info(message.getFormattedMessage(), message.getTraceId());
-    }
-
-    public debug(message: Message): void {
-        this.logger.debug(message.getFormattedMessage(), message.getTraceId());
-    }
-
-    public trace(message: Message): void {
-        this.logger.verbose(message.getFormattedMessage(), message.getTraceId());
+        return this.buildLog(info.timestamp as string, appName, message, traceId, level);
     }
 }

@@ -61,4 +61,8 @@ export class PinoLogger implements ILogger {
     public trace(message: Message): void {
         this.logger.trace(message.getFormattedMessage());
     }
+
+    public tics(message: Message): void {
+        //this.logger.tics(message.getFormattedMessage());
+    }
 }

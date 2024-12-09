@@ -21,4 +21,5 @@ export interface ILogger {
   info (message : Message)  : void;
   debug(message : Message)  : void;
   trace(message : Message)  : void;
+  tics (message : Message)  : void;
 }

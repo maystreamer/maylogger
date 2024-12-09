@@ -10,11 +10,34 @@
  * - `ERROR`: Represents error messages indicating that something has gone wrong in the application.
  */
 export enum LogLevel {
-    DEBUG   = 'debug',
-    INFO    = 'info',
-    WARN    = 'warn',
-    ERROR   = 'error',
+    DEBUG   =   'debug',
+    INFO    =   'info',
+    WARN    =   'warn',
+    ERROR   =   'error',
+    TICS    =   'tics',
 }
+
+  // Define the color mapping for the custom levels
+export const CustomLevels = {
+    levels: {
+      fatal:    0,
+      error:    1,
+      warn:     2,
+      info:     3,
+      debug:    4,
+      trace:    5,
+      tics:     -1,  
+    } as Record<string, number>,
+    colors: {
+      fatal:    'red',
+      error:    'red',
+      warn:     'yellow',
+      info:     'green',
+      debug:    'cyan',
+      trace:    'magenta',
+      tics:     'grey',
+    },
+  };
 
 /**
  * LoggerConfig Interface
@@ -34,6 +57,11 @@ export interface LoggerConfig {
     appName             :   string;
     isDebugEnabled      :   boolean;
     level               :   LogLevel;
+    datePattern?        :   string;
+    maxSize?            :   string;  
+    maxFiles?           :   string;
+    isTicsEnabled?      :   boolean;
+    isErrorEnabled?     :   boolean;  
     timestampFormat     :   string;
     customMessageFormat :   string;
 }
@@ -56,6 +84,11 @@ export const defaultConfig: LoggerConfig = {
     appName             :   '',
     isDebugEnabled      :   false,
     level               :   LogLevel.INFO,
+    datePattern         :   'YYYY-MM-DD',
+    maxSize             :   '50m', 
+    maxFiles            :   '15d',
+    isTicsEnabled       :   false,
+    isErrorEnabled      :   false,      
     timestampFormat     :   'yyyy-mm-dd hh:mm:ss.ms',
     customMessageFormat :   '{{timestamp}} {{level}} {{message}} {{caller}}'
 };

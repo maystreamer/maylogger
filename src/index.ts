@@ -30,6 +30,8 @@ const config: LoggerConfig = {
     dir:                    configuration.logDir,
     appName:                configuration.appName,
     isDebugEnabled:         configuration.isDebugEnabled,
+    isTicsEnabled:          configuration.isTicsEnabled,
+    isErrorEnabled:         configuration.isErrorEnabled,          
     level:                  LogLevel.INFO,
     timestampFormat:        'yyyy-mm-dd hh:mm:ss.ms',
     customMessageFormat:    '{{timestamp}} {{level}} {{message}} {{caller}}'
@@ -50,6 +52,7 @@ const exampleFunction = () => {
     logger.debug('This is a debug message {0}', traceId, payload);
     logger.warn('This is a warning message {0}', traceId, payload);
     logger.error(new Error("Error Occured"), "There is an error {0}", traceId, payload);
+    logger.tics(`{0}`, traceId, config);
 };
 
 // Simulate application running
