@@ -25,7 +25,6 @@ import { v4 as uuidv4 } from 'uuid';
  * The logger is used to log messages with various levels and includes dynamic data such as `traceId`, payloads, and timestamps. 
  * This demonstrates how the logger can be customized and utilized to capture important information in the application's execution.
  */
-
 const config: LoggerConfig = {
     dir:                    configuration.logDir,
     appName:                configuration.appName,
@@ -40,7 +39,9 @@ const config: LoggerConfig = {
 // Initialize logger with 'winston' or 'pino'
 const logger = new Logger('winston', config);
 
-const payload = { context: { user: 'john_doe', action: 'login' } }
+const payload  = { context: { user: 'john_doe', action: 'login' } }
+const payload1 = { pages: { page: 'login', action: 'submit' } }
+
 const traceId = uuidv4();
 const start = new Date().getTime();
 // Example function that logs messages at different levels
@@ -53,6 +54,7 @@ const exampleFunction = () => {
     logger.warn('This is a warning message {0}', traceId, payload);
     logger.error(new Error("Error Occured"), "There is an error {0}", traceId, payload);
     logger.tics(`{0}`, traceId, config);
+    logger.tics(`{0}`, traceId, payload1);
 };
 
 // Simulate application running

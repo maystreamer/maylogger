@@ -89,6 +89,8 @@ export class WinstonLogger extends AbstractLogger {
                                     ...(ticsFileRotateTransport ? [ticsFileRotateTransport] : []),   // Only add ticsFileRotateTransport if it's defined
                                     consoleTransport,
                                 ],
+            exitOnError:        false,
+            handleRejections:   true
         });
         winston.addColors(CustomLevels.colors);
     }
