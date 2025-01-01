@@ -1,3 +1,4 @@
+import { ILogger } from './ilogger';
 import { LoggerConfig } from './logconfig';
 import { LoggerFactory } from './loggerfactory';
 import { Message } from './message';
@@ -24,7 +25,7 @@ import { getDateTimeDiff } from './utils';
  * This class relies on the `LoggerFactory` to create an appropriate logger instance based on the configuration provided.
  */
 export class Logger extends TraceLogger{
-    private logger: any;
+    private logger: ILogger;
 
     constructor(private type: string, private config: LoggerConfig) {
         super()
