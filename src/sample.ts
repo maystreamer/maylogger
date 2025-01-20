@@ -21,7 +21,7 @@ const config: LoggerConfig = {
 const logger = new Logger('winston', config);
 
 router.get('/', (req: Request, res: Response) => {
-     const traceId = req.headers['x-trace-id'] || 'fuck-something wrong'
+     const traceId = req.headers['x-trace-id'] || 'something wrong'
 
     logger.info(`This is an info message 2: ${config.timestampFormat}, traceId: ${traceId}`);
     
