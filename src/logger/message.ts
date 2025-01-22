@@ -13,22 +13,22 @@
  */
 export class Message {
     private message:        string;
-    private traceId:        string;
+    private traceId?:        string;
     private parameters:     any[];
     private cause?:         Error;
     private isDebugEnabled: boolean;
 
-    static msg(message: string, traceId: string, ...parameters: any[]): Message {
+    static msg(message: string, traceId?: string, ...parameters: any[]): Message {
         return new Message(message, traceId, parameters);
     }
 
-    static msgWithCause(cause: Error, message: string, traceId: string, ...parameters: any[]): Message {
+    static msgWithCause(cause: Error, message: string, traceId?: string, ...parameters: any[]): Message {
         const msg = new Message(message, traceId, parameters);
         msg.setCause(cause);
         return msg;
     }
 
-    constructor(message: string, traceId:string, parameters: any[] = []) {
+    constructor(message: string, traceId?:string, parameters: any[] = []) {
         this.message        = message;
         this.parameters     = parameters;
         this.traceId        = traceId;
@@ -61,7 +61,7 @@ export class Message {
     }
 
     getTraceId(): string {
-        return this.traceId;
+        return this.traceId || "";
     }
     setTraceId(value: string) {
         this.traceId = value;

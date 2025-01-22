@@ -2,6 +2,7 @@ import { ILogger } from './ilogger';
 import { LoggerConfig, defaultConfig } from './logconfig';
 import { Message } from './message';
 import * as path from 'path';
+import { TraceLogger } from './traceLogger';
 
 /**
  * AbstractLogger Class
@@ -9,7 +10,7 @@ import * as path from 'path';
  * A base class for implementing custom loggers. It defines the structure and common behavior for loggers, including 
  * the buildLog method, which is used to format log entries consistently across different transports.
  */
-export abstract class AbstractLogger implements ILogger {
+export abstract class AbstractLogger extends TraceLogger implements ILogger {
     private logDir:     string;
     protected config:   LoggerConfig;
     protected logger:   any;
@@ -22,6 +23,7 @@ export abstract class AbstractLogger implements ILogger {
      * @param config Logger configuration
      */
     constructor(config: LoggerConfig) {
+        super()
         this.config    =    { ...defaultConfig, ...config };
         this.logDir    =    (this.config.dir ? this.config.dir.toLowerCase() : __dirname) as string;
         this.level     =    this.config.level.trim().toLowerCase();
@@ -44,23 +46,23 @@ export abstract class AbstractLogger implements ILogger {
     }
 
     public error(message: Message): void {
-        this.logger.error(message.getFormattedMessage(), message.getTraceId());
+        this.logger.error(message.getFormattedMessage(), this.getTraceId());
     }
 
     public warn(message: Message): void {
-        this.logger.warn(message.getFormattedMessage(), message.getTraceId());
+        this.logger.warn(message.getFormattedMessage(), this.getTraceId());
     }
 
     public info(message: Message): void {
-        this.logger.info(message.getFormattedMessage(), message.getTraceId());
+        this.logger.info(message.getFormattedMessage(), this.getTraceId());
     }
 
     public debug(message: Message): void {
-        this.logger.debug(message.getFormattedMessage(), message.getTraceId());
+        this.logger.debug(message.getFormattedMessage(), this.getTraceId());
     }
 
     public trace(message: Message): void {
-        this.logger.verbose(message.getFormattedMessage(), message.getTraceId());
+        this.logger.verbose(message.getFormattedMessage(), this.getTraceId());
     }
 
     // Add the new custom level "tics"

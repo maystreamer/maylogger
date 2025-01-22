@@ -2,6 +2,7 @@ import { ILogger } from './ilogger';
 import { LoggerConfig } from './logconfig';
 import { LoggerFactory } from './loggerfactory';
 import { Message } from './message';
+import { TraceLogger } from './traceLogger';
 import { getDateTimeDiff } from './utils';
 
 /**
@@ -23,64 +24,65 @@ import { getDateTimeDiff } from './utils';
  * 
  * This class relies on the `LoggerFactory` to create an appropriate logger instance based on the configuration provided.
  */
-export class Logger {
+export class Logger extends TraceLogger{
     private logger: ILogger;
 
     constructor(private type: string, private config: LoggerConfig) {
+        super()
         this.logger = LoggerFactory.getLogger(type, config);
     }
 
-    public error(cause: Error, message: string, traceId: string, ...params: any[]): void {
+    public error(cause: Error, message: string, traceId?: string, ...params: any[]): void {
         const msg = Message.msgWithCause(cause, message, traceId, ...params);
         this.logger.error(msg);
     }
 
-    public errorWithTime(cause: Error, message: string, traceId: string, start: number, ...params: any[]): void {
+    public errorWithTime(cause: Error, message: string, start: number, traceId?: string, ...params: any[]): void {
         const msg = Message.msgWithCause(cause, message, traceId, ...params, getDateTimeDiff(start));
         this.logger.error(msg);
     }
 
-    public warn(message: string, traceId: string, ...params: any[]): void {
+    public warn(message: string, traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params);
         this.logger.warn(msg);
     }
 
-    public warnWithTime(message: string, traceId: string, start: number, ...params: any[]): void {
+    public warnWithTime(message: string,start: number,traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params, getDateTimeDiff(start));
         this.logger.warn(msg);
     }
 
-    public info(message: string, traceId: string, ...params: any[]): void {
+    public info(message: string, traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params);
         this.logger.info(msg);
     }
 
-    public infoWithTime(message: string, traceId: string, start: number, ...params: any[]): void {
+    public infoWithTime(message: string, start: number, traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params, getDateTimeDiff(start));
         this.logger.info(msg);
     }
 
-    public debug(message: string, traceId: string, ...params: any[]): void {
+    public debug(message: string, traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params);
         this.logger.debug(msg);
     }
 
-    public debugWithTime(message: string, traceId: string, start: number, ...params: any[]): void {
+    public debugWithTime(message: string, start: number, traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params, getDateTimeDiff(start));
         this.logger.debug(msg);
     }
 
-    public trace(message: string, traceId: string, ...params: any[]): void {
+    public trace(message: string, traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params);
         this.logger.trace(msg);
     }
 
-    public tics(message: string, traceId: string, ...params: any[]): void {
+    public tics(message: string, traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params);
         this.logger.tics(msg);
     }
 
-    public ticsWithTime(message: string, traceId: string, start: number, ...params: any[]): void {
+    public ticsWithTime(message: string, start: number, traceId?: string, ...params: any[]): void {
         const msg = Message.msg(message, traceId, ...params, getDateTimeDiff(start));
         this.logger.tics(msg);
     }
