@@ -20,13 +20,13 @@ export enum LogLevel {
   // Define the color mapping for the custom levels
 export const CustomLevels = {
     levels: {
-      fatal:    0,
-      error:    1,
-      warn:     2,
-      info:     3,
-      debug:    4,
-      trace:    5,
-      tics:     -1,  
+      tics:     0, 
+      fatal:    1,
+      error:    2,
+      warn:     3,
+      info:     4,
+      debug:    5,
+      trace:    6 
     } as Record<string, number>,
     colors: {
       fatal:    'red',

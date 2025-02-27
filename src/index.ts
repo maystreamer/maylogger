@@ -45,18 +45,31 @@ const payload1 = { pages: { page: 'login', action: 'submit' } }
 const traceId = uuidv4();
 const start = new Date().getTime();
 // Example function that logs messages at different levels
-const exampleFunction = () => {
-    logger.info('This is an info message {0} and {1}', traceId, config.timestampFormat, new Date());
-    logger.infoWithTime('This is an info with time message {0} and {1} and took {2}', traceId, start, config.timestampFormat, new Date());
-    logger.info(`This is an info message 2: ${config.timestampFormat}`, traceId);
-    logger.info('This is a new info message {0} and number is {1}', traceId, payload, 1234567);
-    logger.debug('This is a debug message {0}', traceId, payload);
-    logger.warn('This is a warning message {0}', traceId, payload);
-    logger.error(new Error("Error Occured"), "There is an error {0}", traceId, payload);
-    logger.tics(`{0}`, traceId, config);
-    logger.tics(`{0}`, traceId, payload1);
+const exampleFunction = (i: number) => {
+    //logger.info('This is an info message without traceID {0} and {1} and {2}', config.timestampFormat, new Date(), i);
+    //logger.info('This is an info message {0} and {1} and {2}', traceId, config.timestampFormat, new Date(), i);
+    logger.infoWithTime('This is an info with time message {0} and {1} and took {2} and {3}', traceId, start, config.timestampFormat, new Date(), i);
+    // logger.info(`This is an info message 2: ${config.timestampFormat} and ${i}`, traceId);
+    // logger.info('This is a new info message {0} and number is {1} and {2}', traceId, payload, 1234567, i);
+    // logger.debug('This is a debug message {0} and {1}', traceId, payload, i);
+    // logger.warn('This is a warning message {0} and {1}', traceId, payload, i);
+    // logger.error(new Error("Error Occured"), "There is an error {0} and {1}", traceId, payload, i);
+    logger.tics(`{0} - {1}`, traceId, config, i);
+    logger.tics(`{0} - {1}`, traceId, payload1, i);
 };
+
+function sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
 // Simulate application running
 console.log('Application is starting...');
-exampleFunction();
+
+async function main() {
+    for (let i = 100; i < 1001; i++) {
+        exampleFunction(i);
+        await sleep(2000);
+    }
+}
+
+main();

@@ -29,6 +29,7 @@ import DailyRotateFile from 'winston-daily-rotate-file';
  * 
  * This class provides a robust logging solution that integrates well with the `winston` library, offering flexibility in log 
  * formatting, file rotation, and log level control, while ensuring rich contextual information is included in the logs.
+ * https://betterstack.com/community/guides/logging/how-to-install-setup-and-use-winston-and-morgan-to-log-node-js-applications/ 
  */
 export class WinstonLogger extends AbstractLogger {
  
@@ -107,6 +108,7 @@ export class WinstonLogger extends AbstractLogger {
     getFormatForFile(appName: string): winston.Logform.Format {
         const containerName = process.env.CONTAINER_NAME || 'Unknown';
         return format.combine(
+            winston.format.json(),
             winston.format.label({ label: containerName }),
             format.printf(info => {
                 return this.prepareLog(info, appName);

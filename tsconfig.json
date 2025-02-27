@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES6",          // Specify ECMAScript target version
+    "target": "es2017",          // Specify ECMAScript target version
     "module": "commonjs",     // Specify module code generation
     "outDir": "./dist",       // Specify the output directory for .js files
     "rootDir": "./src",       // Optionally specify where your source TypeScript files are located
